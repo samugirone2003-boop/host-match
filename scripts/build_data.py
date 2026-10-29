@@ -199,6 +199,7 @@ def main(src, snapshot):
             1 if (num(r["calculated_host_listings_count"], int) or 1) > 1 else 0,
             amenity_mask(r),
             round(metro_dist / 10) * 10,
+            r["id"],  # stringa: gli id Airbnb superano la precisione dei numeri JavaScript
         ])
 
     out = {
@@ -207,7 +208,7 @@ def main(src, snapshot):
         "neighbourhoods": [title(h) for h in hoods],
         "amenities": [name for name, _ in AMENITIES],
         "fields": ["lat", "lon", "type", "hood", "price", "guests", "bedrooms", "occupancy", "rating", "reviews",
-                   "multiHost", "amenities", "metroDist"],
+                   "multiHost", "amenities", "metroDist", "id"],
         "listings": points,
     }
     os.makedirs(os.path.join(ROOT, "data"), exist_ok=True)

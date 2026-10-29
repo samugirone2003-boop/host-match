@@ -228,3 +228,9 @@ h4 { margin: 24px 0 10px; font-size: 16px; }
   .help { grid-template-columns: 1fr 1fr; }
   .months { gap: 3px; height: 140px; }
 }
+
+.pop { display: grid; gap: 4px; font: 14px/1.4 Inter, sans-serif; min-width: 190px; }
+.pop-type { display: flex; align-items: center; gap: 6px; font-weight: 600; }
+.pop-price { font-size: 20px; font-weight: 700; margin-top: 4px; }
+.pop-price span, .pop-muted { font-size: 13px; font-weight: 400; color: #6b7178; }
+.leaflet-container a.pop-link { color: #fff; text-align: center; padding: 8px 14px; margin-top: 8px; font-size: 14px; }

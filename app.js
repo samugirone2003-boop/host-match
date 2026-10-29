@@ -1,6 +1,6 @@
 // Host Match: mappa, guida prezzi, servizi, zona e previsione di guadagno sugli annunci Airbnb di Milano.
 
-const F = { lat: 0, lon: 1, type: 2, hood: 3, price: 4, guests: 5, beds: 6, occ: 7, rating: 8, reviews: 9, multi: 10, amen: 11, metro: 12 };
+const F = { lat: 0, lon: 1, type: 2, hood: 3, price: 4, guests: 5, beds: 6, occ: 7, rating: 8, reviews: 9, multi: 10, amen: 11, metro: 12, id: 13 };
 const css = getComputedStyle(document.documentElement);
 const TYPE_COLORS = [0, 1, 2, 3].map(i => css.getPropertyValue(`--t${i}`).trim());
 const MIN_COMPARABLES = 8;
@@ -9,7 +9,7 @@ const MONTHS_LONG = ['gennaio', 'febbraio', 'marzo', 'aprile', 'maggio', 'giugno
 const DAYS = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
 
 const state = { type: null, hood: null, metro: false, sort: { key: 'n', dir: -1 }, home: null, suggestion: null };
-let DATA, HOODS, TYPES, AMEN, CTX, BASE, map, pointsLayer, pointsRenderer, hoodLayer, metroLayer;
+let DATA, HOODS, TYPES, AMEN, CTX, BASE, map, pointsLayer, hoodLayer, metroLayer;
 
 const int = v => v == null ? '–' : Math.round(v).toLocaleString('it-IT', { useGrouping: 'always' });
 const eur = v => v == null ? '–' : (v < 0 ? '−€' : '€') + int(Math.abs(v));
@@ -79,12 +79,16 @@ function renderKpis() {
 
 function initMap(geo) {
   const dark = matchMedia('(prefers-color-scheme: dark)').matches;
-  map = L.map('map', { preferCanvas: true, zoomControl: false, scrollWheelZoom: false }).setView([45.4642, 9.19], 12);
+  // Quartieri e annunci condividono un solo canvas: così un clic colpisce l'annuncio se c'è, altrimenti il quartiere.
+  map = L.map('map', {
+    renderer: L.canvas({ padding: 0.5, tolerance: 4 }), zoomControl: false, scrollWheelZoom: false,
+  }).setView([45.4642, 9.19], 12);
   L.control.zoom({ position: 'bottomright' }).addTo(map);
-  L.tileLayer(`https://{s}.basemaps.cartocdn.com/${dark ? 'dark_all' : 'light_all'}/{z}/{x}/{y}{r}.png`, {
-    attribution: '&copy; OpenStreetMap &copy; CARTO',
-    maxZoom: 18,
-  }).addTo(map);
+  // Mappa base grigia di Esri (gratuita, senza chiave): sfondo senza scritte + livello con i nomi delle vie.
+  const esri = name => `https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_${dark ? 'Dark' : 'Light'}_Gray_${name}/MapServer/tile/{z}/{y}/{x}`;
+  const tiles = { maxZoom: 18, maxNativeZoom: 16 };
+  L.tileLayer(esri('Base'), { ...tiles, attribution: 'Tiles &copy; Esri, HERE, Garmin, &copy; OpenStreetMap' }).addTo(map);
+  L.tileLayer(esri('Reference'), tiles).addTo(map);
   map.on('focus', () => map.scrollWheelZoom.enable());
   map.on('blur', () => map.scrollWheelZoom.disable());
 
@@ -96,8 +100,11 @@ function initMap(geo) {
     },
   }).addTo(map);
 
-  pointsRenderer = L.canvas({ padding: 0.5 });
-  pointsLayer = L.layerGroup().addTo(map);
+  pointsLayer = L.featureGroup().addTo(map);
+  pointsLayer.on('click', e => {
+    L.DomEvent.stopPropagation(e);
+    L.popup({ maxWidth: 260 }).setLatLng(e.latlng).setContent(listingCard(e.layer.options.listing)).openOn(map);
+  });
 
   // Le stazioni metro stanno in un livello sopra i punti degli annunci.
   map.createPane('metro').style.zIndex = 450;
@@ -147,16 +154,29 @@ function renderMap() {
   pointsLayer.clearLayers();
   for (const l of filtered()) {
     L.circleMarker([l[F.lat], l[F.lon]], {
-      renderer: pointsRenderer,
       radius: 2.6,
       stroke: false,
       fillColor: TYPE_COLORS[l[F.type]],
       fillOpacity: 0.65,
-      interactive: false,
+      listing: l,
     }).addTo(pointsLayer);
   }
   hoodLayer.setStyle(hoodStyle);
   renderPanel();
+}
+
+function listingCard(l) {
+  const beds = l[F.beds] === 0 ? 'monolocale' : l[F.beds] ? `${l[F.beds]} camer${l[F.beds] === 1 ? 'a' : 'e'}` : null;
+  const details = [l[F.guests] && `${l[F.guests]} ospit${l[F.guests] === 1 ? 'e' : 'i'}`, beds].filter(Boolean).join(' · ');
+  const rating = l[F.rating] ? `★ ${l[F.rating].toFixed(2).replace('.', ',')} · ${int(l[F.reviews])} recensioni` : 'Nessuna recensione';
+  return `
+    <div class="pop">
+      <div class="pop-type"><i class="dot" style="background:${TYPE_COLORS[l[F.type]]}"></i>${TYPES[l[F.type]]} · ${HOODS[l[F.hood]]}</div>
+      ${details ? `<div>${details}</div>` : ''}
+      <div class="pop-price">${l[F.price] != null ? `${eur(l[F.price])} <span>a notte</span>` : '<span>Prezzo non disponibile</span>'}</div>
+      <div class="pop-muted">${rating}</div>
+      <a class="cta pop-link" href="https://www.airbnb.it/rooms/${l[F.id]}" target="_blank" rel="noopener">Vedi su Airbnb</a>
+    </div>`;
 }
 
 function selectHood(hood, fly = true) {
