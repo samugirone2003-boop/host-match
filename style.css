@@ -205,7 +205,7 @@ h4 { margin: 24px 0 10px; font-size: 16px; }
 .about { display: grid; gap: 16px; }
 .about-text { max-width: 760px; font-size: 17px; }
 .about-text p { margin: 0 0 12px; }
-.cards { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
 .help { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
 .help li { border-top: 2px solid var(--accent); padding-top: 12px; }
 .help b { display: block; margin-bottom: 4px; }
