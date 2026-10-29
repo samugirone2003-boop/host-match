@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Host Match · Airbnb a Milano</title>
+  <meta name="description" content="Quanti annunci Airbnb ci sono a Milano, dove sono, di che tipo e a quanto si affittano. Una guida semplice per gli host.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="wrap top">
+    <div class="brand">Host<span>Match</span></div>
+    <nav>
+      <a href="#mappa">Mappa</a>
+      <a href="#prezzo">Quanto chiedere</a>
+      <a href="#quartieri">Quartieri</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="wrap hero">
+      <h1>Il mercato Airbnb di Milano,<br>in un colpo d'occhio.</h1>
+      <p class="lead">Quanti annunci ci sono, dove sono, che tipo di alloggi e a quanto si affittano. Per capire dove si posiziona la tua casa e quale prezzo chiedere.</p>
+      <div class="kpis" id="kpis"></div>
+    </section>
+
+    <section class="wrap" id="mappa">
+      <div class="section-head">
+        <h2>Dove sono</h2>
+        <p>Ogni punto è un annuncio. Clicca un quartiere sulla mappa per vederne i numeri.</p>
+      </div>
+      <div class="map-grid">
+        <div class="map-box">
+          <div class="filters" id="typeFilter" role="group" aria-label="Tipo di alloggio"></div>
+          <div id="map"></div>
+        </div>
+        <aside class="panel" id="areaPanel" aria-live="polite"></aside>
+      </div>
+    </section>
+
+    <section class="wrap" id="prezzo">
+      <div class="section-head">
+        <h2>Quanto chiedere</h2>
+        <p>Descrivi il tuo alloggio: lo confrontiamo con gli annunci simili nella stessa zona.</p>
+      </div>
+      <div class="calc">
+        <form class="calc-form" id="calcForm">
+          <label>Quartiere
+            <select id="cHood"></select>
+          </label>
+          <label>Tipo di alloggio
+            <select id="cType">
+              <option value="0">Casa intera</option>
+              <option value="1">Stanza privata</option>
+            </select>
+          </label>
+          <label>Ospiti
+            <select id="cGuests"></select>
+          </label>
+          <label>Camere da letto
+            <select id="cBeds">
+              <option value="0">Monolocale</option>
+              <option value="1" selected>1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4 o più</option>
+            </select>
+          </label>
+        </form>
+        <div class="calc-result" id="calcResult" aria-live="polite"></div>
+      </div>
+    </section>
+
+    <section class="wrap" id="quartieri">
+      <div class="section-head">
+        <h2>Quartiere per quartiere</h2>
+        <p>Clicca sulle intestazioni per ordinare, su una riga per vederla sulla mappa.</p>
+      </div>
+      <input class="search" id="hoodSearch" type="search" placeholder="Cerca un quartiere…" aria-label="Cerca un quartiere">
+      <div class="table-scroll">
+        <table id="hoodTable">
+          <thead>
+            <tr>
+              <th data-key="name">Quartiere</th>
+              <th data-key="n" class="num">Annunci</th>
+              <th data-key="entire" class="num">Case intere</th>
+              <th data-key="price" class="num">Prezzo mediano</th>
+              <th data-key="occ" class="num">Notti prenotate/anno</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <footer class="wrap foot">
+    <p><strong>Come leggere i numeri.</strong> Prezzi a notte in euro, solo affitti brevi (sotto i 28 notti minime). Le notti prenotate sono una stima di Inside Airbnb basata sulle recensioni. La posizione dei punti è approssimata di circa 150 m.</p>
+    <p>Dati: <a href="https://insideairbnb.com/milan/" target="_blank" rel="noopener">Inside Airbnb</a>, rilevazione del <span id="snapshot"></span>, licenza <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a>. Host Match non è affiliato ad Airbnb.</p>
+  </footer>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
