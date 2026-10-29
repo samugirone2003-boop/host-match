@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Host Match · Airbnb a Milano</title>
-  <meta name="description" content="Quanti annunci Airbnb ci sono a Milano, dove sono, di che tipo e a quanto si affittano. Una guida semplice per gli host.">
+  <meta name="description" content="Host Match aiuta gli host di Milano a decidere cosa offrire e a quanto affittare: prezzi, servizi, zona e previsioni di guadagno, quartiere per quartiere.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -16,15 +16,19 @@
     <div class="brand">Host<span>Match</span></div>
     <nav>
       <a href="#mappa">Mappa</a>
-      <a href="#prezzo">Quanto chiedere</a>
-      <a href="#quartieri">Quartieri</a>
+      <a href="#prezzo">Prezzo</a>
+      <a href="#servizi">Servizi</a>
+      <a href="#zona">Zona</a>
+      <a href="#guadagno">Guadagno</a>
+      <a href="#chi-siamo">Chi siamo</a>
+      <a href="#contatti" class="cta small">Contattaci</a>
     </nav>
   </header>
 
   <main>
     <section class="wrap hero">
-      <h1>Il mercato Airbnb di Milano,<br>in un colpo d'occhio.</h1>
-      <p class="lead">Quanti annunci ci sono, dove sono, che tipo di alloggi e a quanto si affittano. Per capire dove si posiziona la tua casa e quale prezzo chiedere.</p>
+      <h1>Decidi cosa offrire<br>e a quanto affittare.</h1>
+      <p class="lead">Host Match aiuta gli host di Milano, singoli e professionali, con i dati di tutti gli annunci della città: prezzi, servizi, zona e previsioni di guadagno, quartiere per quartiere.</p>
       <div class="kpis" id="kpis"></div>
     </section>
 
@@ -35,7 +39,7 @@
       </div>
       <div class="map-grid">
         <div class="map-box">
-          <div class="filters" id="typeFilter" role="group" aria-label="Tipo di alloggio"></div>
+          <div class="filters" id="typeFilter" role="group" aria-label="Filtri mappa"></div>
           <div id="map"></div>
         </div>
         <aside class="panel" id="areaPanel" aria-live="polite"></aside>
@@ -44,8 +48,9 @@
 
     <section class="wrap" id="prezzo">
       <div class="section-head">
+        <span class="step">1</span>
         <h2>Quanto chiedere</h2>
-        <p>Descrivi il tuo alloggio: lo confrontiamo con gli annunci simili nella stessa zona.</p>
+        <p>Descrivi il tuo alloggio: lo confrontiamo con gli annunci simili. Le sezioni sotto si aggiornano di conseguenza.</p>
       </div>
       <div class="calc">
         <form class="calc-form" id="calcForm">
@@ -75,6 +80,51 @@
       </div>
     </section>
 
+    <section class="wrap" id="servizi">
+      <div class="section-head">
+        <span class="step">2</span>
+        <h2>Cosa offrire</h2>
+        <p class="seg-label" data-seg></p>
+      </div>
+      <div id="offer"></div>
+    </section>
+
+    <section class="wrap" id="zona">
+      <div class="section-head">
+        <span class="step">3</span>
+        <h2>La zona</h2>
+        <p>Locali, parchi e mobilità del quartiere scelto, confrontati con il resto di Milano.</p>
+      </div>
+      <div id="zone"></div>
+    </section>
+
+    <section class="wrap" id="guadagno">
+      <div class="section-head">
+        <span class="step">4</span>
+        <h2>Previsione di guadagno</h2>
+        <p>Quanto può rendere il tuo alloggio in un anno, mese per mese, al netto dei costi. Tutti i valori si possono modificare.</p>
+      </div>
+      <div class="forecast">
+        <form class="calc-form" id="fForm">
+          <label>Prezzo a notte (€)<input type="number" id="fPrice" min="10" step="1" inputmode="numeric"></label>
+          <label>Notti prenotate all'anno<input type="number" id="fNights" min="0" max="365" step="1" inputmode="numeric"></label>
+          <label>Notti medie per soggiorno<input type="number" id="fStay" value="3" min="1" step="0.5" inputmode="decimal"></label>
+          <label>Costo pulizia a soggiorno (€)<input type="number" id="fClean" value="40" min="0" step="5" inputmode="numeric"></label>
+          <label>Commissione Airbnb (%)<input type="number" id="fFee" value="15" min="0" max="30" step="0.5" inputmode="decimal"></label>
+          <label>Tasse (%)
+            <select id="fTax">
+              <option value="21">Cedolare secca 21%</option>
+              <option value="26">Cedolare secca 26% (dal 2° immobile)</option>
+              <option value="0">Non calcolare</option>
+            </select>
+          </label>
+          <label>Gestione affidata a terzi (%)<input type="number" id="fMgmt" value="0" min="0" max="40" step="1" inputmode="numeric"></label>
+          <label>Spese fisse al mese (€)<input type="number" id="fFixed" value="150" min="0" step="10" inputmode="numeric"></label>
+        </form>
+        <div class="calc-result" id="fResult" aria-live="polite"></div>
+      </div>
+    </section>
+
     <section class="wrap" id="quartieri">
       <div class="section-head">
         <h2>Quartiere per quartiere</h2>
@@ -96,11 +146,52 @@
         </table>
       </div>
     </section>
+
+    <section class="wrap" id="chi-siamo">
+      <div class="section-head">
+        <h2>Chi siamo</h2>
+        <p>Airbnb è pensata soprattutto per chi prenota. Host Match nasce per chi ospita.</p>
+      </div>
+      <div class="about">
+        <div class="about-text">
+          <p>Agli host manca uno strumento che li aiuti a prevedere quanto guadagneranno e a gestire bene l'appartamento. Host Match unisce i dati di tutti gli annunci di Milano con le informazioni sul quartiere. Così ogni decisione su prezzo e servizi si basa sui numeri, non sulle impressioni.</p>
+          <p>Siamo il ponte tra i dati del mercato e le scelte di tutti i giorni: ti diciamo a quanto affittare, cosa offrire e cosa aspettarti mese per mese. Se vuoi, ti affianchiamo anche nella gestione.</p>
+        </div>
+        <div class="cards">
+          <div class="card">
+            <h3>Host singoli</h3>
+            <p>Hai una casa o una stanza e poco tempo. Ti aiutiamo a trovare il prezzo giusto e a migliorare l'annuncio senza perdere ore a confrontarti con gli altri.</p>
+          </div>
+          <div class="card">
+            <h3>Host professionali e investitori</h3>
+            <p>Gestisci più appartamenti o stai valutando un acquisto. Ti diamo stime di rendimento per quartiere e il confronto con il mercato prima di decidere.</p>
+          </div>
+        </div>
+        <ul class="help">
+          <li><b>Prezzo giusto</b><span>Tariffa consigliata in base a quartiere, tipo e dimensione.</span></li>
+          <li><b>Servizi da offrire</b><span>Quello che gli ospiti si aspettano e quello che fa guadagnare di più.</span></li>
+          <li><b>Gestione dell'appartamento</b><span>Supporto nelle attività di tutti i giorni, da concordare insieme.</span></li>
+          <li><b>Previsioni di guadagno</b><span>Incasso lordo e netto atteso, mese per mese.</span></li>
+        </ul>
+      </div>
+
+      <!-- SEGNAPOSTO: sostituire email e telefono con i contatti reali -->
+      <div class="contact" id="contatti">
+        <div>
+          <h3>Parliamo del tuo appartamento</h3>
+          <p>Scrivici: ti mandiamo un'analisi del tuo alloggio e ti diciamo come possiamo aiutarti.</p>
+        </div>
+        <div class="contact-actions">
+          <a class="cta" href="mailto:info@example.com?subject=Host%20Match%20-%20il%20mio%20appartamento">Scrivici una email</a>
+          <span class="contact-alt">info@example.com · +39 000 000 0000</span>
+        </div>
+      </div>
+    </section>
   </main>
 
   <footer class="wrap foot">
-    <p><strong>Come leggere i numeri.</strong> Prezzi a notte in euro, solo affitti brevi (sotto i 28 notti minime). Le notti prenotate sono una stima di Inside Airbnb basata sulle recensioni. La posizione dei punti è approssimata di circa 150 m.</p>
-    <p>Dati: <a href="https://insideairbnb.com/milan/" target="_blank" rel="noopener">Inside Airbnb</a>, rilevazione del <span id="snapshot"></span>, licenza <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a>. Host Match non è affiliato ad Airbnb.</p>
+    <p><strong>Come leggere i numeri.</strong> Prezzi a notte in euro, solo affitti brevi (sotto i 28 notti minime). Le notti prenotate sono una stima di Inside Airbnb basata sulle recensioni. I mesi forti e deboli sono ricavati dalle recensioni degli ultimi tre anni. Le previsioni sono indicative: per tasse e obblighi fiscali fai sempre riferimento al tuo commercialista. La posizione dei punti è approssimata di circa 150 m.</p>
+    <p>Dati annunci: <a href="https://insideairbnb.com/milan/" target="_blank" rel="noopener">Inside Airbnb</a>, rilevazione del <span id="snapshot"></span>, licenza <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a>. Locali, parchi e trasporti: © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a>, licenza ODbL. Host Match non è affiliato ad Airbnb.</p>
   </footer>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
